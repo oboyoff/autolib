@@ -35,7 +35,8 @@ router.post('/login', async (req, res) => {
     return res.status(429).json({ ok: false, error: 'Trop de tentatives. Réessayez dans 15 minutes.' });
   }
 
-  const user = db.prepare('SELECT id, email, password_hash, role FROM users WHERE email = ?').get(email);
+  const users = await db.query('SELECT id, email, password_hash, role FROM users WHERE email = ?', [email]);
+  const user = users[0];
   if (!user) {
     rlBump(key);
     return res.status(401).json({ ok: false, error: 'Identifiants invalides' });

@@ -12,3 +12,5 @@ screenshots_premium/
 *.jpeg
 *.gif
 *.svg
+.vercel
+.env.vercel

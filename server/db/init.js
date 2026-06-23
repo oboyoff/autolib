@@ -1,19 +1,22 @@
-// Init script: crée schéma + seed véhicules + crée admin
 import bcrypt from 'bcryptjs';
 import { db } from './db.js';
 import { initSchema, seed } from './schema.js';
 
-initSchema();
-seed();
+await initSchema();
+await seed();
 
-const userCount = db.prepare('SELECT COUNT(*) as n FROM users').get().n;
+const userRows = await db.query('SELECT COUNT(*) as n FROM users');
+const userCount = Number(userRows[0]?.n) || 0;
 if (userCount === 0) {
   const hash = bcrypt.hashSync('voxmo2025', 10);
-  db.prepare('INSERT INTO users (email, password_hash, role) VALUES (?, ?, ?)')
-    .run('admin@voxmo.eu', hash, 'admin');
-  console.log('[seed] admin créé: admin@voxmo.eu');
+  await db.run(
+    'INSERT INTO users (email, password_hash, role) VALUES (?, ?, ?)',
+    ['admin@voxmo.eu', hash, 'admin']
+  );
+  console.log('[seed] admin cree: admin@voxmo.eu');
 } else {
-  console.log(`[seed] ${userCount} user(s) déjà en BDD, skip`);
+  console.log(`[seed] ${userCount} user(s) deja en BDD, skip`);
 }
 
-console.log('[init] DB prête à', db.name);
+console.log('[init] DB prete');
+process.exit(0);
