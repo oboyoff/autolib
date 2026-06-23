@@ -19,7 +19,7 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      imgSrc: ["'self'", "data:", "https://images.unsplash.com", "https://*.unsplash.com"],
+      imgSrc: ["'self'", "data:", "https://images.unsplash.com", "https://*.unsplash.com", "https://i.pinimg.com"],
       fontSrc: ["'self'", "https:", "data:"],
       styleSrc: ["'self'", "https:", "'unsafe-inline'"],
       scriptSrc: ["'self'"],
