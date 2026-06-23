@@ -1,0 +1,14 @@
+node_modules/
+.env
+.env.local
+voxmo.db
+voxmo.db-shm
+voxmo.db-wal
+screenshots/
+screenshots_audit/
+screenshots_premium/
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg

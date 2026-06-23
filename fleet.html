@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VOXMO — LA FLOTTE</title>
+    <meta name="description" content="22 vehicules premium. Berlines, SUV, sportives, electriques. Reservation en ligne.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="loader">
+            <div class="loader-text">VOXMO</div>
+            <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+        </div>
+    </div>
+
+    <!-- NAV -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-inner">
+            <a href="index.html" class="logo"><span class="logo-mark">◼</span> VOXMO</a>
+            <div class="nav-links">
+                <a href="index.html#accueil" class="nav-link">// 01_ACCUEIL</a>
+                <a href="index.html#pourquoi" class="nav-link">// 02_POURQUOI</a>
+                <a href="index.html#process" class="nav-link">// 03_PROCESS</a>
+                <a href="fleet.html" class="nav-link active">// 04_FLOTTE</a>
+                <a href="index.html#contact" class="nav-link">// 05_CONTACT</a>
+            </div>
+            <button class="burger" id="hamburger" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-inner">
+            <a href="index.html#accueil" class="mobile-link">// 01_ACCUEIL</a>
+            <a href="index.html#pourquoi" class="mobile-link">// 02_POURQUOI</a>
+            <a href="index.html#process" class="mobile-link">// 03_PROCESS</a>
+            <a href="fleet.html" class="mobile-link">// 04_FLOTTE</a>
+            <a href="index.html#contact" class="mobile-link">// 05_CONTACT</a>
+        </div>
+    </div>
+
+    <!-- FLEET HERO -->
+    <section class="fleet-hero">
+        <div class="section-head">
+            <div class="head-l">
+                <span class="head-num">04</span>
+                <h2 class="head-title">LA FLOTTE<span class="hl">.</span></h2>
+            </div>
+            <p class="head-sub">22 vehicules premium selectionnes. Berlines, SUV, sportives, electriques.<br>Choisissez. On s'occupe du reste.</p>
+        </div>
+    </section>
+
+    <!-- FLEET GRID -->
+    <section class="fleet">
+        <div class="filter-row">
+            <button class="filter active" data-filter="all">TOUS</button>
+            <button class="filter" data-filter="berline">BERLINES</button>
+            <button class="filter" data-filter="suv">SUV</button>
+            <button class="filter" data-filter="sportive">SPORTIVES</button>
+            <button class="filter" data-filter="electrique">ÉLECTRIQUES</button>
+            <button class="filter" data-filter="premium">PREMIUM</button>
+        </div>
+
+        <div class="fleet-grid" id="fleetGrid">
+            <!-- Rendu dynamique par fleet-api.js (source : /api/vehicles) -->
+        </div>
+    </section>
+
+    <!-- ACHAT / VENTE -->
+    <section class="fleet-sales" id="achat">
+        <div class="section-head">
+            <div class="head-l">
+                <span class="head-num">04B</span>
+                <h2 class="head-title">ACHAT<span class="hl">.</span></h2>
+            </div>
+            <p class="head-sub">Tous nos véhicules sont aussi à vendre. Acompte de 50% à la commande, solde à la remise des clés.<br>Contact direct via WhatsApp pour réserver votre achat.</p>
+        </div>
+
+        <div class="sales-notice">
+            <i class="fas fa-info-circle"></i>
+            <span>Pour tout achat : un acompte de <strong>50% du prix</strong> est requis pour bloquer le véhicule. Solde au moment de la remise des clés.</span>
+        </div>
+
+        <div class="sales-table-wrap">
+            <table class="sales-table">
+                <thead>
+                    <tr>
+                        <th>VÉHICULE</th>
+                        <th>PRIX DE VENTE</th>
+                        <th>ACOMPTE 50%</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="salesBody"></tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-top">
+            <div class="f-brand">
+                <div class="f-logo"><span class="logo-mark">◼</span> VOXMO</div>
+                <p>La location de vehicules premium dans 8 capitales europeennes.<br>Flotte recente, assurance tous risques, conciergerie 24/7.</p>
+            </div>
+            <div class="f-col">
+                <h4>NAV</h4>
+                <a href="index.html#accueil">ACCUEIL</a>
+                <a href="fleet.html">FLOTTE</a>
+                <a href="index.html#contact">CONTACT</a>
+            </div>
+            <div class="f-col">
+                <h4>PAY</h4>
+                <a href="https://wa.me/33774269599" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> WHATSAPP</a>
+                <a href="#"><i class="fab fa-paypal"></i> PAYPAL</a>
+                <a href="#"><i class="fas fa-university"></i> VIREMENT</a>
+                <a href="#"><i class="fas fa-money-bill-wave"></i> ESPÈCES</a>
+            </div>
+            <div class="f-col">
+                <h4>SOCIAL</h4>
+                <a href="#"><i class="fab fa-instagram"></i> INSTAGRAM</a>
+                <a href="#"><i class="fab fa-linkedin-in"></i> LINKEDIN</a>
+                <a href="#"><i class="fab fa-twitter"></i> X</a>
+                <a href="https://wa.me/33774269599" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> WHATSAPP</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2025 VOXMO — TOUS DROITS RESERVES</span>
+            <span class="f-code">[ v.2025.06 / BUILD:001 ]</span>
+        </div>
+    </footer>
+
+    <button class="btt" id="backToTop" aria-label="Retour en haut">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- WhatsApp widget -->
+    <div class="msgr-widget">
+        <div class="msgr-pop" id="messengerPopup">
+            <div class="msgr-head">
+                <strong>VOXMO / CONCIERGERIE</strong>
+                <button id="messengerClose" aria-label="Fermer"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="msgr-body">
+                <div class="msgr-bubble">Bonjour ! Réservation, devis, modification — on vous répond en moins d'1h.</div>
+            </div>
+            <a href="https://wa.me/33774269599" target="_blank" rel="noopener" class="msgr-cta wa-cta">
+                <i class="fab fa-whatsapp"></i> OUVRIR WHATSAPP
+            </a>
+        </div>
+        <button class="msgr-fab wa-fab" id="messengerFab" aria-label="WhatsApp">
+            <i class="fab fa-whatsapp"></i>
+        </button>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="fleet-api.js"></script>
+    <script src="sales-api.js"></script>
+</body>
+</html>

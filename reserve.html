@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VOXMO — RESERVATION</title>
+    <meta name="description" content="Reservation et paiement securise par carte bancaire. Confirmation immediate.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="loader">
+            <div class="loader-text">VOXMO</div>
+            <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+        </div>
+    </div>
+
+    <!-- NAV -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-inner">
+            <a href="index.html" class="logo"><span class="logo-mark">◼</span> VOXMO</a>
+            <div class="nav-links">
+                <a href="index.html#accueil" class="nav-link">// 01_ACCUEIL</a>
+                <a href="index.html#pourquoi" class="nav-link">// 02_POURQUOI</a>
+                <a href="index.html#process" class="nav-link">// 03_PROCESS</a>
+                <a href="fleet.html" class="nav-link">// 04_FLOTTE</a>
+                <a href="index.html#contact" class="nav-link">// 07_CONTACT</a>
+            </div>
+            <button class="burger" id="hamburger" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-inner">
+            <a href="index.html#accueil" class="mobile-link">// 01_ACCUEIL</a>
+            <a href="index.html#pourquoi" class="mobile-link">// 02_POURQUOI</a>
+            <a href="index.html#process" class="mobile-link">// 03_PROCESS</a>
+            <a href="fleet.html" class="mobile-link">// 04_FLOTTE</a>
+            <a href="index.html#contact" class="mobile-link">// 07_CONTACT</a>
+        </div>
+    </div>
+
+    <!-- RESERVE WRAPPER -->
+    <section class="reserve">
+        <div class="section-head">
+            <div class="head-l">
+                <span class="head-num">R1</span>
+                <h2 class="head-title">RESERVATION<span class="hl">.</span></h2>
+            </div>
+            <p class="head-sub">3 étapes. Réservation via WhatsApp. Acompte 50% (PayPal ou virement instantané).</p>
+        </div>
+
+        <!-- STEPPER -->
+        <div class="reserve-stepper">
+            <div class="reserve-step active" id="step-1">01 / INFOS LOCATION</div>
+            <div class="reserve-step" id="step-2">02 / CONDUCTEUR</div>
+            <div class="reserve-step" id="step-3">03 / RÉCAP & RÉServation</div>
+        </div>
+
+        <!-- VEHICLE RECAP -->
+        <div class="reserve-recap">
+            <div class="reserve-recap-img" id="recap-img"></div>
+            <div class="reserve-recap-info">
+                <h3 id="recap-name">VOITURE</h3>
+                <span id="recap-slug">Récupération...</span>
+            </div>
+            <div class="reserve-recap-price">
+                <span id="recap-price">0</span><span>€/JOUR</span>
+            </div>
+        </div>
+
+        <div class="reserve-total">
+            <span>TOTAL</span>
+            <strong id="reserve-total">0€</strong>
+        </div>
+
+        <form id="reserveForm" class="reserve-form">
+
+            <!-- STEP 1 — INFOS LOCATION -->
+            <div class="reserve-step-panel active" id="panel-1">
+                <h3 class="panel-title">01 / INFOS LOCATION</h3>
+                <div class="form-grid">
+                    <div class="field">
+                        <label>DATE DE DEBUT</label>
+                        <input type="date" id="startDate" required>
+                    </div>
+                    <div class="field">
+                        <label>DATE DE FIN</label>
+                        <input type="date" id="endDate" required>
+                    </div>
+                    <div class="field">
+                        <label>LIEU DE PRISE EN CHARGE</label>
+                        <select id="pickup" required>
+                            <option value="Paris">Paris</option>
+                            <option value="Bruxelles">Bruxelles</option>
+                            <option value="Geneve">Geneve</option>
+                            <option value="Milan">Milan</option>
+                            <option value="Amsterdam">Amsterdam</option>
+                            <option value="Berlin">Berlin</option>
+                            <option value="Barcelone">Barcelone</option>
+                            <option value="Londres">Londres</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>LIEU DE RESTITUTION</label>
+                        <select id="dropoff" required>
+                            <option value="Paris">Paris</option>
+                            <option value="Bruxelles">Bruxelles</option>
+                            <option value="Geneve">Geneve</option>
+                            <option value="Milan">Milan</option>
+                            <option value="Amsterdam">Amsterdam</option>
+                            <option value="Berlin">Berlin</option>
+                            <option value="Barcelone">Barcelone</option>
+                            <option value="Londres">Londres</option>
+                        </select>
+                    </div>
+                </div>
+                <p class="cross-fee" id="crossFee">Lieu de prise en charge et restitution identiques. Pas de frais supplementaires.</p>
+
+                <!-- OPTIONS DE RESERVATION -->
+                <div class="field-title" style="margin-top: 28px; font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 600; border-bottom: 1px solid var(--line-2); padding-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-dim);">Options supplémentaires</div>
+                <div class="options-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 16px 0;">
+                    <label class="option-card" style="border: 1px solid var(--line-2); padding: 14px; background: var(--bg-2); cursor: pointer; display: flex; align-items: center; gap: 12px; transition: all 0.2s; border-radius: 4px; user-select: none;">
+                        <input type="checkbox" id="opt-gps" value="gps" style="width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer;">
+                        <div>
+                            <strong style="display:block; font-size:0.9rem; font-family: 'Fraunces', serif; font-weight: 600;">GPS HAUT DE GAMME</strong>
+                            <span style="font-size:0.8rem; font-family: 'Inter', sans-serif; color:var(--mute); font-weight: 300;">+10€</span>
+                        </div>
+                    </label>
+                    <label class="option-card" style="border: 1px solid var(--line-2); padding: 14px; background: var(--bg-2); cursor: pointer; display: flex; align-items: center; gap: 12px; transition: all 0.2s; border-radius: 4px; user-select: none;">
+                        <input type="checkbox" id="opt-siege" value="siege" style="width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer;">
+                        <div>
+                            <strong style="display:block; font-size:0.9rem; font-family: 'Fraunces', serif; font-weight: 600;">SIÈGE BÉBÉ</strong>
+                            <span style="font-size:0.8rem; font-family: 'Inter', sans-serif; color:var(--mute); font-weight: 300;">+15€</span>
+                        </div>
+                    </label>
+                    <label class="option-card" style="border: 1px solid var(--line-2); padding: 14px; background: var(--bg-2); cursor: pointer; display: flex; align-items: center; gap: 12px; transition: all 0.2s; border-radius: 4px; user-select: none;">
+                        <input type="checkbox" id="opt-assurance" value="assurance" style="width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer;">
+                        <div>
+                            <strong style="display:block; font-size:0.9rem; font-family: 'Fraunces', serif; font-weight: 600;">ASSURANCE PREMIUM</strong>
+                            <span style="font-size:0.8rem; font-family: 'Inter', sans-serif; color:var(--mute); font-weight: 300;">+15€ / jour</span>
+                        </div>
+                    </label>
+                    <label class="option-card" style="border: 1px solid var(--line-2); padding: 14px; background: var(--bg-2); cursor: pointer; display: flex; align-items: center; gap: 12px; transition: all 0.2s; border-radius: 4px; user-select: none;">
+                        <input type="checkbox" id="opt-conducteur" value="conducteur" style="width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer;">
+                        <div>
+                            <strong style="display:block; font-size:0.9rem; font-family: 'Fraunces', serif; font-weight: 600;">2ème CONDUCTEUR</strong>
+                            <span style="font-size:0.8rem; font-family: 'Inter', sans-serif; color:var(--mute); font-weight: 300;">+25€</span>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- CODE PROMO -->
+                <div class="field-title" style="margin-top: 28px; font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 600; border-bottom: 1px solid var(--line-2); padding-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-dim);">Code Promo</div>
+                <div class="promo-row" style="display: flex; gap: 12px; margin: 16px 0;">
+                    <input type="text" id="promoInput" placeholder="Saisir un code (ex: VOXMO10)" style="flex: 1; border: 1px solid var(--line-2); padding: 12px; font-family: 'Inter', sans-serif; font-size: 1rem; border-radius: 4px; text-transform: uppercase; background: var(--bg-3); color: var(--ink);">
+                    <button type="button" id="applyPromoBtn" class="btn btn-ghost" style="padding: 12px 24px; font-family: 'Inter', sans-serif; white-space: nowrap; height: 100%; cursor: pointer; background: var(--primary); color: var(--bg); border: none; font-weight: 600;">APPLIQUER</button>
+                </div>
+                <p id="promoStatus" style="display:none; background: var(--accent-subtle, rgba(201,169,106,.08)); border: 1px solid var(--accent); padding: 12px; margin: 12px 0 24px 0; font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 500; color: var(--accent); border-radius: 4px;"></p>
+                <div class="panel-nav">
+                    <a href="fleet.html" class="btn btn-ghost"><i class="fas fa-arrow-left"></i> RETOUR FLOTTE</a>
+                    <button type="button" class="btn btn-primary" id="goStep2">CONTINUER <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <!-- STEP 2 — CONDUCTEUR -->
+            <div class="reserve-step-panel" id="panel-2">
+                <h3 class="panel-title">02 / CONDUCTEUR</h3>
+                <div class="form-grid">
+                    <div class="field">
+                        <label>NOM COMPLET</label>
+                        <input type="text" id="rName" required placeholder="Jean Dupont">
+                    </div>
+                    <div class="field">
+                        <label>EMAIL</label>
+                        <input type="email" id="rEmail" required placeholder="jean@email.com">
+                    </div>
+                    <div class="field">
+                        <label>TELEPHONE</label>
+                        <input type="tel" id="rPhone" required placeholder="+33 6 12 34 56 78">
+                    </div>
+                    <div class="field">
+                        <label>DATE DE NAISSANCE</label>
+                        <input type="date" id="rBirth" required>
+                    </div>
+                    <div class="field">
+                        <label>NUMERO DE PERMIS</label>
+                        <input type="text" id="rLicense" required placeholder="FR-123456789">
+                    </div>
+                    <div class="field">
+                        <label>PAYS DU PERMIS</label>
+                        <select id="rCountry" required>
+                            <option value="FR">France</option>
+                            <option value="BE">Belgique</option>
+                            <option value="CH">Suisse</option>
+                            <option value="IT">Italie</option>
+                            <option value="NL">Pays-Bas</option>
+                            <option value="DE">Allemagne</option>
+                            <option value="ES">Espagne</option>
+                            <option value="GB">Royaume-Uni</option>
+                            <option value="LU">Luxembourg</option>
+                            <option value="AT">Autriche</option>
+                            <option value="INT">Permis international</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>DATE D'OBTENTION DU PERMIS</label>
+                        <input type="date" id="rLicenseDate" required>
+                    </div>
+                    <div class="field full">
+                        <label>ADRESSE DE RESIDENCE</label>
+                        <input type="text" id="rAddress" required placeholder="12 rue de la Paix, 75002 Paris">
+                    </div>
+                </div>
+                <p class="cross-fee" id="ageCheck">Verification automatique : conducteur >= 21 ans et permis >= 1 an.</p>
+                <div class="panel-nav">
+                    <button type="button" class="btn btn-ghost" id="backStep1"><i class="fas fa-arrow-left"></i> RETOUR</button>
+                    <button type="button" class="btn btn-primary" id="goStep3">CONTINUER <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <!-- STEP 3 — RESERVATION & PAIEMENT -->
+            <div class="reserve-step-panel" id="panel-3">
+                <h3 class="panel-title">03 / RÉCAPITULATIF & RÉSERVATION</h3>
+
+                <!-- Récap commande -->
+                <div class="order-recap" id="orderRecap"></div>
+
+                <!-- Acompte info -->
+                <div class="deposit-info">
+                    <i class="fas fa-shield-alt"></i>
+                    <span><strong>Acompte de 50%</strong> requis pour confirmer votre réservation.<br>Solde réglé à la remise du véhicule (PayPal, virement instantané ou espèces).</span>
+                </div>
+
+                <!-- Boutons d'action -->
+                <div class="pay-cta-row">
+                    <button type="button" class="btn btn-ghost" id="backStep2"><i class="fas fa-arrow-left"></i> RETOUR</button>
+                    <div class="pay-actions">
+                        <button type="button" class="btn-whatsapp" id="reserveWhatsapp">
+                            <i class="fab fa-whatsapp"></i> RÉSERVER VIA WHATSAPP
+                        </button>
+                        <button type="button" class="btn btn-primary" id="showPayment">
+                            <i class="fas fa-credit-card"></i> PAYER DIRECTEMENT
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANEL PAIEMENT DIRECT (PayPal / virement) -->
+            <div class="reserve-step-panel" id="panel-payment">
+                <h3 class="panel-title">03B / PAIEMENT DIRECT</h3>
+
+                <div class="payment-methods">
+                    <div class="pay-block">
+                        <div class="pay-block-head">
+                            <i class="fab fa-paypal"></i>
+                            <h4>PAYPAL</h4>
+                        </div>
+                        <p class="pay-block-amt" id="payAmtPaypal">Acompte 50% : —</p>
+                        <p class="pay-block-detail">Envoyez l'acompte via PayPal puis confirmez par WhatsApp.</p>
+                        <a class="btn-pay-method" id="paypalLink" href="#" target="_blank" rel="noopener">
+                            <i class="fab fa-paypal"></i> PAYER VIA PAYPAL
+                        </a>
+                    </div>
+
+                    <div class="pay-block">
+                        <div class="pay-block-head">
+                            <i class="fas fa-university"></i>
+                            <h4>VIREMENT INSTANTANÉ</h4>
+                        </div>
+                        <p class="pay-block-amt" id="payAmtWire">Acompte 50% : —</p>
+                        <p class="pay-block-detail">IBAN communiqué après validation via WhatsApp.</p>
+                        <button type="button" class="btn-pay-method" id="wireWhatsapp">
+                            <i class="fab fa-whatsapp"></i> DEMANDER L'IBAN
+                        </button>
+                    </div>
+                </div>
+
+                <div class="pay-cta-row">
+                    <button type="button" class="btn btn-ghost" id="backToRecap"><i class="fas fa-arrow-left"></i> RETOUR</button>
+                </div>
+            </div>
+
+            <!-- PANEL SUCCÈS WHATSAPP -->
+            <div class="reserve-step-panel" id="panel-success">
+                <div class="pay-result success">
+                    <i class="fab fa-whatsapp"></i>
+                    <h2>REDIRECTION VERS WHATSAPP</h2>
+                    <p>WhatsApp s'est ouvert dans un nouvel onglet avec votre demande pré-remplie.<br>Si rien ne s'est passé, cliquez sur le bouton ci-dessous.</p>
+                    <div class="success-recap" id="successRecap"></div>
+                    <div class="panel-nav">
+                        <a href="#" id="retryWhatsapp" class="btn-whatsapp" target="_blank" rel="noopener">
+                            <i class="fab fa-whatsapp"></i> ROUVRIR WHATSAPP
+                        </a>
+                        <a href="index.html" class="btn btn-primary">RETOUR ACCUEIL <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
+        <div class="security-row">
+            <span><i class="fas fa-lock"></i> Paiement securise (chiffre TLS)</span>
+            <span><i class="fas fa-shield-alt"></i> Aucune donnee bancaire stockee</span>
+            <span><i class="fas fa-credit-card"></i> Conforme PCI-DSS</span>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-top">
+            <div class="f-brand">
+                <div class="f-logo"><span class="logo-mark">◼</span> VOXMO</div>
+                <p>La location de vehicules premium dans 8 capitales europeennes.<br>Flotte recente, assurance tous risques, conciergerie 24/7.</p>
+            </div>
+            <div class="f-col">
+                <h4>NAV</h4>
+                <a href="index.html#accueil">ACCUEIL</a>
+                <a href="fleet.html">FLOTTE</a>
+                <a href="index.html#contact">CONTACT</a>
+            </div>
+            <div class="f-col">
+                <h4>PAY</h4>
+                <a href="https://wa.me/33774269599" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> WHATSAPP</a>
+                <a href="#"><i class="fab fa-paypal"></i> PAYPAL</a>
+                <a href="#"><i class="fas fa-university"></i> VIREMENT</a>
+                <a href="#"><i class="fas fa-money-bill-wave"></i> ESPÈCES</a>
+            </div>
+            <div class="f-col">
+                <h4>SOCIAL</h4>
+                <a href="#"><i class="fab fa-instagram"></i> INSTAGRAM</a>
+                <a href="#"><i class="fab fa-linkedin-in"></i> LINKEDIN</a>
+                <a href="#"><i class="fab fa-twitter"></i> X</a>
+                <a href="https://wa.me/33774269599" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> WHATSAPP</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2025 VOXMO — TOUS DROITS RESERVES</span>
+            <span class="f-code">[ v.2025.06 / BUILD:001 ]</span>
+        </div>
+    </footer>
+
+    <button class="btt" id="backToTop" aria-label="Retour en haut">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- WhatsApp widget -->
+    <div class="msgr-widget">
+        <div class="msgr-pop" id="messengerPopup">
+            <div class="msgr-head">
+                <strong>VOXMO / CONCIERGERIE</strong>
+                <button id="messengerClose" aria-label="Fermer"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="msgr-body">
+                <div class="msgr-bubble">Besoin d'aide pour votre réservation ? On vous répond en moins d'1h.</div>
+            </div>
+            <a href="https://wa.me/33774269599" target="_blank" rel="noopener" class="msgr-cta wa-cta">
+                <i class="fab fa-whatsapp"></i> OUVRIR WHATSAPP
+            </a>
+        </div>
+        <button class="msgr-fab wa-fab" id="messengerFab" aria-label="WhatsApp">
+            <i class="fab fa-whatsapp"></i>
+        </button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

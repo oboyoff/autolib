@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VOXMO — Tableau de bord</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<!-- ============== CONNEXION ============== -->
+<section class="admin-login" id="adminLogin" aria-label="Connexion administrateur">
+    <div class="admin-login-box">
+        <div class="admin-login-head">
+            <span class="head-num">A1</span>
+            <h1 class="head-title">VOXMO <span class="hl">/ Admin</span></h1>
+        </div>
+        <p class="head-sub">Espace réservé à l'équipe VOXMO.</p>
+
+        <form id="loginForm" class="reserve-form" novalidate>
+            <div class="field">
+                <label for="loginEmail">Adresse e-mail</label>
+                <input type="email" id="loginEmail" required placeholder="vous@voxmo.eu" autocomplete="username" autofocus>
+            </div>
+            <div class="field">
+                <label for="loginPassword">Mot de passe</label>
+                <div class="pwd-wrap">
+                    <input type="password" id="loginPassword" required placeholder="Votre mot de passe" autocomplete="current-password">
+                    <button type="button" class="pwd-toggle" id="pwdToggle" aria-label="Afficher le mot de passe" title="Afficher / masquer">
+                        <i class="fa-regular fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+            <p class="login-hint" id="loginHint">
+                <i class="fa-solid fa-circle-info"></i>
+                Première connexion ? Identifiants par défaut : <code>admin@voxmo.eu</code> / <code>voxmo2025</code>
+            </p>
+            <p class="login-error" id="loginError" role="alert" aria-live="assertive"></p>
+            <button type="submit" class="btn btn-primary btn-block" id="loginBtn">
+                <i class="fa-solid fa-right-to-bracket"></i> Se connecter
+            </button>
+        </form>
+
+        <a href="index.html" class="admin-back"><i class="fa-solid fa-arrow-left"></i> Retour au site</a>
+    </div>
+</section>
+
+<!-- ============== TABLEAU DE BORD ============== -->
+<section class="admin-dash" id="adminDash" hidden>
+    <header class="admin-header">
+        <div class="admin-logo"><span class="logo-mark">◼</span> VOXMO <span class="admin-tag">/ Admin</span></div>
+        <div class="admin-user">
+            <span class="admin-user-mail" id="adminEmail"></span>
+            <button class="btn btn-ghost btn-sm" id="refreshBtn" title="Recharger les données">
+                <i class="fa-solid fa-rotate"></i> Actualiser
+            </button>
+            <button class="btn btn-ghost btn-sm btn-danger-ghost" id="logoutBtn">
+                <i class="fa-solid fa-right-from-bracket"></i> Déconnexion
+            </button>
+        </div>
+    </header>
+
+    <!-- BANDEAU DE BIENVENUE (première visite) -->
+    <aside class="welcome-banner" id="welcomeBanner" hidden></aside>
+
+    <!-- STATISTIQUES -->
+    <section class="admin-stats" aria-label="Indicateurs clés">
+        <div class="a-stat">
+            <span class="a-num" id="statRes">0</span>
+            <span class="a-lbl">Locations</span>
+        </div>
+        <div class="a-stat">
+            <span class="a-num" id="statRev">0 €</span>
+            <span class="a-lbl">Revenu</span>
+        </div>
+        <div class="a-stat">
+            <span class="a-num" id="statContact">0</span>
+            <span class="a-lbl">Messages</span>
+        </div>
+        <div class="a-stat">
+            <span class="a-num" id="statVeh">0</span>
+            <span class="a-lbl">Véhicules</span>
+        </div>
+    </section>
+
+    <!-- ONGLETS -->
+    <nav class="admin-tabs" role="tablist">
+        <button class="a-tab active" role="tab" data-tab="reservations" aria-selected="true">
+            <i class="fa-solid fa-calendar-check"></i> Réservations
+        </button>
+        <button class="a-tab" role="tab" data-tab="contacts" aria-selected="false">
+            <i class="fa-solid fa-envelope"></i> Messages
+        </button>
+        <button class="a-tab" role="tab" data-tab="vehicles" aria-selected="false">
+            <i class="fa-solid fa-car"></i> Véhicules
+        </button>
+        <button class="a-tab" role="tab" data-tab="stats" aria-selected="false">
+            <i class="fa-solid fa-chart-column"></i> Statistiques
+        </button>
+    </nav>
+
+    <!-- ===== RÉSERVATIONS ===== -->
+    <section class="admin-panel active" id="tab-reservations" role="tabpanel">
+        <div class="panel-head">
+            <h3>Réservations en cours</h3>
+            <p class="panel-help">Cliquez sur <em>Annuler</em> pour stopper une réservation. Le client est libéré du créneau.</p>
+        </div>
+        <div class="a-table-wrap">
+            <table class="a-table">
+                <thead>
+                    <tr>
+                        <th>Réf.</th>
+                        <th>Véhicule</th>
+                        <th>Dates</th>
+                        <th>Trajet</th>
+                        <th>Client</th>
+                        <th>Montant</th>
+                        <th>État</th>
+                        <th class="th-actions">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="resBody">
+                    <tr><td colspan="8" class="a-empty">Chargement…</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ===== MESSAGES ===== -->
+    <section class="admin-panel" id="tab-contacts" role="tabpanel">
+        <div class="panel-head">
+            <h3>Messages des clients</h3>
+            <p class="panel-help">Cliquez sur une ligne pour lire le message en entier.</p>
+        </div>
+        <div class="a-table-wrap">
+            <table class="a-table">
+                <thead>
+                    <tr>
+                        <th>Reçu le</th>
+                        <th>Nom</th>
+                        <th>Contact</th>
+                        <th>Sujet</th>
+                        <th>Aperçu</th>
+                    </tr>
+                </thead>
+                <tbody id="contactBody">
+                    <tr><td colspan="5" class="a-empty">Chargement…</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ===== VÉHICULES ===== -->
+    <section class="admin-panel" id="tab-vehicles" role="tabpanel">
+        <div class="panel-head veh-head">
+            <div>
+                <h3>Gestion de la flotte</h3>
+                <p class="panel-help">Ajoutez un nouveau modèle, modifiez un prix, ou retirez un véhicule de la location.</p>
+            </div>
+            <div class="veh-tools">
+                <label class="search-field">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="search" id="vehSearch" placeholder="Rechercher (nom, catégorie…)" autocomplete="off">
+                </label>
+                <button class="btn btn-primary" id="addVehBtn">
+                    <i class="fa-solid fa-plus"></i> Ajouter un véhicule
+                </button>
+            </div>
+        </div>
+        <p class="veh-count" id="vehCount" aria-live="polite"></p>
+        <div class="a-table-wrap">
+            <table class="a-table" id="vehTable">
+                <thead>
+                    <tr>
+                        <th>Photo</th>
+                        <th>Nom</th>
+                        <th>Prix / jour</th>
+                        <th>Catégorie</th>
+                        <th>État</th>
+                        <th class="th-actions">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="vehBody">
+                    <tr><td colspan="6" class="a-empty">Chargement…</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ===== STATISTIQUES ===== -->
+    <section class="admin-panel" id="tab-stats" role="tabpanel">
+        <div class="panel-head">
+            <h3>Performances détaillées</h3>
+            <p class="panel-help">Vision globale de la répartition des revenus et de l'activité récente.</p>
+        </div>
+        <div class="charts-grid">
+            <article class="chart-card">
+                <h4>Revenus par catégorie</h4>
+                <div class="chart-container-vertical" id="catChart">
+                    <div class="a-empty">Chargement…</div>
+                </div>
+            </article>
+            <article class="chart-card">
+                <h4>Réservations par jour (10 derniers jours)</h4>
+                <div class="chart-container-horizontal" id="dailyChart">
+                    <div class="a-empty">Chargement…</div>
+                </div>
+            </article>
+        </div>
+    </section>
+</section>
+
+<!-- ============== MODALE : VÉHICULE ============== -->
+<div class="admin-modal" id="vehModal" hidden aria-hidden="true" role="dialog" aria-labelledby="modalTitle">
+    <div class="admin-modal-content" role="document">
+        <button class="modal-close" id="closeVehModal" aria-label="Fermer">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <h3 id="modalTitle">Ajouter un véhicule</h3>
+        <p class="modal-help">Renseignez les informations puis cliquez sur <strong>Enregistrer</strong>.</p>
+
+        <form id="vehForm" class="reserve-form" novalidate>
+            <div class="field">
+                <label for="vName">Nom du véhicule <span class="req">*</span></label>
+                <input type="text" id="vName" required placeholder="ex. Audi RS6 Avant">
+                <small class="field-hint">Le nom complet affiché aux clients (ex. <em>Audi RS6 Avant</em>).</small>
+            </div>
+
+            <div class="field-row">
+                <div class="field">
+                    <label for="vPrice">Prix par jour (€) <span class="req">*</span></label>
+                    <input type="number" id="vPrice" required min="1" step="1" placeholder="149">
+                </div>
+                <div class="field">
+                    <label for="vCategory">Catégorie <span class="req">*</span></label>
+                    <select id="vCategory" required>
+                        <option value="berline">Berline</option>
+                        <option value="suv">SUV</option>
+                        <option value="sportive">Sportive</option>
+                        <option value="electrique">Électrique</option>
+                        <option value="premium">Premium</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="field-row">
+                <div class="field">
+                    <label for="vRating">Note (étoiles)</label>
+                    <input type="number" id="vRating" min="0" max="5" step="0.1" placeholder="4.8">
+                    <small class="field-hint">Entre 0 et 5 (ex. <em>4.9</em>). Affichée sur la carte.</small>
+                </div>
+                <div class="field">
+                    <label for="vTag">Badge / Tag</label>
+                    <input type="text" id="vTag" maxlength="24" placeholder="★ POPULAIRE">
+                    <small class="field-hint">Court label affiché en surimpression (ex. <em>★ POPULAIRE</em>, <em>◆ SUPERCAR</em>).</small>
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="vSpecs">Caractéristiques</label>
+                <input type="text" id="vSpecs" maxlength="120" placeholder="5 PLACES, AUTO, 625CH, CUIR">
+                <small class="field-hint">Séparées par des virgules. 4 idéalement (places, boîte, puissance, finition).</small>
+            </div>
+
+            <div class="field">
+                <label>Photo du véhicule <span class="req">*</span></label>
+                <div class="img-tabs" role="tablist">
+                    <button type="button" class="img-tab active" data-mode="upload" role="tab" aria-selected="true">
+                        <i class="fa-solid fa-upload"></i> Envoyer un fichier
+                    </button>
+                    <button type="button" class="img-tab" data-mode="url" role="tab" aria-selected="false">
+                        <i class="fa-solid fa-link"></i> Coller un lien
+                    </button>
+                </div>
+
+                <!-- Mode : upload fichier -->
+                <div class="img-mode" data-mode="upload">
+                    <label class="dropzone" id="dropzone" for="fileInput">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <span class="dz-title">Glissez une image ici</span>
+                        <span class="dz-sub">ou cliquez pour choisir un fichier (JPG, PNG, WebP — 8 Mo max)</span>
+                        <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,image/gif,image/avif" hidden>
+                    </label>
+                    <p class="dz-status" id="uploadStatus" aria-live="polite"></p>
+                </div>
+
+                <!-- Mode : URL Unsplash -->
+                <div class="img-mode" data-mode="url" hidden>
+                    <input type="text" id="vImgUrl" placeholder="ID Unsplash (ex. photo-1606664515524-ed2f786a0bd6) ou URL complète">
+                    <small class="field-hint">Vous pouvez coller l'identifiant seul (Unsplash) ou une adresse d'image en https://…</small>
+                </div>
+
+                <!-- Aperçu commun -->
+                <div class="veh-img-preview" id="vehImgPreview" aria-live="polite" aria-label="Aperçu de la photo">
+                    <span class="veh-img-badge" id="vehImgBadge">Aperçu</span>
+                    <button type="button" class="veh-img-clear" id="vehImgClear" aria-label="Retirer la photo" title="Retirer">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <input type="hidden" id="vImg" required>
+            </div>
+
+            <div class="field field-check">
+                <input type="checkbox" id="vActive" checked>
+                <label for="vActive">Véhicule disponible à la location</label>
+            </div>
+
+            <p class="form-error" id="vehError" role="alert" aria-live="assertive"></p>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-ghost" id="cancelVehBtn">Annuler</button>
+                <button type="submit" class="btn btn-primary" id="saveVehBtn">
+                    <i class="fa-solid fa-floppy-disk"></i> Enregistrer
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ============== MODALE : MESSAGE ============== -->
+<div class="admin-modal" id="msgModal" hidden aria-hidden="true" role="dialog" aria-labelledby="msgTitle">
+    <div class="admin-modal-content msg-modal" role="document">
+        <button class="modal-close" id="closeMsgModal" aria-label="Fermer">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <h3 id="msgTitle">Message</h3>
+        <dl class="msg-meta" id="msgMeta"></dl>
+        <p class="msg-body" id="msgBody"></p>
+        <div class="form-actions">
+            <a href="#" class="btn btn-ghost" id="msgReply" target="_blank" rel="noopener">
+                <i class="fa-solid fa-reply"></i> Répondre par e-mail
+            </a>
+            <button type="button" class="btn btn-primary" id="msgClose">Fermer</button>
+        </div>
+    </div>
+</div>
+
+<!-- ============== MODALE : CONFIRMATION ============== -->
+<div class="admin-modal" id="confirmModal" hidden aria-hidden="true" role="alertdialog" aria-labelledby="confirmTitle" aria-describedby="confirmText">
+    <div class="admin-modal-content confirm-modal" role="document">
+        <div class="confirm-icon" id="confirmIcon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <h3 id="confirmTitle">Confirmer l'action</h3>
+        <p id="confirmText">Êtes-vous sûr ?</p>
+        <div class="confirm-extra" id="confirmExtra" hidden>
+            <label for="confirmInput" id="confirmInputLabel">Tapez le nom du véhicule pour confirmer :</label>
+            <input type="text" id="confirmInput" autocomplete="off">
+        </div>
+        <div class="form-actions">
+            <button type="button" class="btn btn-ghost" id="confirmCancel">Annuler</button>
+            <button type="button" class="btn btn-danger" id="confirmOk">Confirmer</button>
+        </div>
+    </div>
+</div>
+
+<!-- ============== TOASTS ============== -->
+<div class="toast-stack" id="toastStack" aria-live="polite" aria-atomic="true"></div>
+
+<script src="admin.js"></script>
+</body>
+</html>
