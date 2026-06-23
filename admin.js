@@ -415,8 +415,11 @@ function renderVehicles(vehicles) {
     return;
   }
   vehBody.innerHTML = filtered.map(v => {
-    const isUnsplash = v.img && !v.img.startsWith('/');
-    const src = isUnsplash ? `https://images.unsplash.com/${v.img}?w=160&auto=format&fit=crop` : v.img;
+    const src = v.img && v.img.startsWith('http')
+      ? v.img
+      : v.img && !v.img.startsWith('/')
+        ? `https://images.unsplash.com/${v.img}?w=160&auto=format&fit=crop`
+        : v.img;
     return `
       <tr>
         <td><div class="veh-thumb"><img src="${esc(src)}" alt="${esc(v.name)}" loading="lazy"></div></td>

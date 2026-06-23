@@ -229,7 +229,10 @@ if (document.getElementById('reserveForm')) {
         const recapSlug = document.getElementById('recap-slug');
         const recapPrice = document.getElementById('recap-price');
 
-        if (recapImg) recapImg.style.backgroundImage = `url(https://images.unsplash.com/${vehicle.img}?w=600&q=80)`;
+        const imgUrl = vehicle.img && vehicle.img.startsWith('http')
+          ? vehicle.img
+          : `https://images.unsplash.com/${vehicle.img}?w=600&q=80`;
+        if (recapImg) recapImg.style.backgroundImage = `url(${imgUrl})`;
         if (recapName) recapName.textContent = vehicle.name;
         if (recapSlug) recapSlug.textContent = `Ref: ${carSlug}`;
         if (recapPrice) recapPrice.textContent = vehicle.price;

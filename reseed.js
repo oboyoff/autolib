@@ -1,4 +1,17 @@
-import { db } from './db.js';
+#!/usr/bin/env node
+/**
+ * reseed.js — Drop & re-seed vehicles with new Pinterest image URLs.
+ * Usage: DATABASE_URL="..." node reseed.js
+ */
+import pg from 'pg';
+
+const DATABASE_URL = process.env.DATABASE_URL;
+if (!DATABASE_URL) {
+  console.error('Missing DATABASE_URL env var');
+  process.exit(1);
+}
+
+const pool = new pg.Pool({ connectionString: DATABASE_URL, ssl: { rejectUnauthorized: false } });
 
 const VEHICLES = [
   { slug: 'audi-rs6-avant',         name: 'AUDI RS6 AVANT',          price: 440,   category: 'berline',    img: 'https://i.pinimg.com/736x/f5/13/d3/f513d3255b60253edabe547ec0f796d9.jpg', specs: '5 PLACES,AUTO,ESSENCE,QUATTRO',                       rating: 4.9, tag: '★ POPULAIRE' },
@@ -25,167 +38,29 @@ const VEHICLES = [
   { slug: 'mercedes-amg-gt-coupe',  name: 'MERCEDES-AMG GT COUPE',   price: 600,   category: 'premium',    img: 'https://i.pinimg.com/736x/e4/69/cc/e469cc4b7860bb35bf2fc01cfc5ead13.jpg', specs: '2 PLACES,AUTO,557CH,CUIR',                             rating: 4.9, tag: '◆ GT' },
 ];
 
-export async function initSchema() {
-  const isPg = db.type === 'postgres';
+async function reseed() {
+  const client = await pool.connect();
+  try {
+    // Delete all existing vehicles
+    await client.query('DELETE FROM vehicles');
+    console.log('[reseed] All vehicles deleted');
 
-  if (isPg) {
-    await db.exec(`
-      CREATE TABLE IF NOT EXISTS users (
-        id SERIAL PRIMARY KEY,
-        email VARCHAR(255) UNIQUE NOT NULL,
-        password_hash TEXT NOT NULL,
-        role TEXT NOT NULL DEFAULT 'admin',
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-
-      CREATE TABLE IF NOT EXISTS vehicles (
-        id SERIAL PRIMARY KEY,
-        slug VARCHAR(100) UNIQUE NOT NULL,
-        name VARCHAR(255) NOT NULL,
-        price INTEGER NOT NULL,
-        category VARCHAR(50) NOT NULL,
-        img TEXT NOT NULL,
-        active INTEGER NOT NULL DEFAULT 1,
-        specs TEXT DEFAULT '',
-        rating REAL DEFAULT 4.8,
-        tag TEXT DEFAULT '',
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-
-      CREATE TABLE IF NOT EXISTS reservations (
-        id SERIAL PRIMARY KEY,
-        booking_id VARCHAR(20) UNIQUE NOT NULL,
-        vehicle_slug VARCHAR(100) NOT NULL REFERENCES vehicles(slug),
-        start_date DATE NOT NULL,
-        end_date DATE NOT NULL,
-        pickup VARCHAR(100) NOT NULL,
-        dropoff VARCHAR(100) NOT NULL,
-        driver_name VARCHAR(255) NOT NULL,
-        driver_email VARCHAR(255) NOT NULL,
-        driver_phone VARCHAR(50) NOT NULL,
-        driver_birth DATE NOT NULL,
-        driver_license VARCHAR(100) NOT NULL,
-        driver_country VARCHAR(10) NOT NULL,
-        driver_license_date DATE NOT NULL,
-        driver_address TEXT NOT NULL,
-        total INTEGER NOT NULL,
-        status TEXT NOT NULL DEFAULT 'confirmed',
-        options TEXT,
-        promo_code TEXT,
-        discount INTEGER DEFAULT 0,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-
-      CREATE TABLE IF NOT EXISTS contacts (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        email VARCHAR(255) NOT NULL,
-        phone VARCHAR(50),
-        subject VARCHAR(255),
-        message TEXT NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-    `);
-
-    await db.exec(`
-      DO $$ BEGIN
-        ALTER TABLE reservations ADD COLUMN IF NOT EXISTS options TEXT;
-      EXCEPTION WHEN duplicate_column THEN null;
-      END $$;
-    `);
-    await db.exec(`
-      DO $$ BEGIN
-        ALTER TABLE reservations ADD COLUMN IF NOT EXISTS promo_code TEXT;
-      EXCEPTION WHEN duplicate_column THEN null;
-      END $$;
-    `);
-    await db.exec(`
-      DO $$ BEGIN
-        ALTER TABLE reservations ADD COLUMN IF NOT EXISTS discount INTEGER DEFAULT 0;
-      EXCEPTION WHEN duplicate_column THEN null;
-      END $$;
-    `);
-  } else {
-    await db.exec(`
-      CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        email TEXT UNIQUE NOT NULL,
-        password_hash TEXT NOT NULL,
-        role TEXT NOT NULL DEFAULT 'admin',
-        created_at TEXT DEFAULT CURRENT_TIMESTAMP
-      );
-
-      CREATE TABLE IF NOT EXISTS vehicles (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        slug TEXT UNIQUE NOT NULL,
-        name TEXT NOT NULL,
-        price INTEGER NOT NULL,
-        category TEXT NOT NULL,
-        img TEXT NOT NULL,
-        active INTEGER NOT NULL DEFAULT 1,
-        specs TEXT DEFAULT '',
-        rating REAL DEFAULT 4.8,
-        tag TEXT DEFAULT '',
-        created_at TEXT DEFAULT CURRENT_TIMESTAMP
-      );
-
-      CREATE TABLE IF NOT EXISTS reservations (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        booking_id TEXT UNIQUE NOT NULL,
-        vehicle_slug TEXT NOT NULL,
-        start_date TEXT NOT NULL,
-        end_date TEXT NOT NULL,
-        pickup TEXT NOT NULL,
-        dropoff TEXT NOT NULL,
-        driver_name TEXT NOT NULL,
-        driver_email TEXT NOT NULL,
-        driver_phone TEXT NOT NULL,
-        driver_birth TEXT NOT NULL,
-        driver_license TEXT NOT NULL,
-        driver_country TEXT NOT NULL,
-        driver_license_date TEXT NOT NULL,
-        driver_address TEXT NOT NULL,
-        total INTEGER NOT NULL,
-        status TEXT NOT NULL DEFAULT 'confirmed',
-        options TEXT,
-        promo_code TEXT,
-        discount INTEGER DEFAULT 0,
-        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (vehicle_slug) REFERENCES vehicles(slug)
-      );
-
-      CREATE TABLE IF NOT EXISTS contacts (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        email TEXT NOT NULL,
-        phone TEXT,
-        subject TEXT,
-        message TEXT NOT NULL,
-        created_at TEXT DEFAULT CURRENT_TIMESTAMP
-      );
-    `);
-
-    try { await db.exec("ALTER TABLE reservations ADD COLUMN options TEXT;"); } catch (e) {}
-    try { await db.exec("ALTER TABLE reservations ADD COLUMN promo_code TEXT;"); } catch (e) {}
-    try { await db.exec("ALTER TABLE reservations ADD COLUMN discount INTEGER DEFAULT 0;"); } catch (e) {}
-    try { await db.exec("ALTER TABLE vehicles ADD COLUMN specs TEXT DEFAULT '';"); } catch (e) {}
-    try { await db.exec("ALTER TABLE vehicles ADD COLUMN rating REAL DEFAULT 4.8;"); } catch (e) {}
-    try { await db.exec("ALTER TABLE vehicles ADD COLUMN tag TEXT DEFAULT '';"); } catch (e) {}
-  }
-}
-
-export async function seed() {
-  const rows = await db.query('SELECT COUNT(*) as n FROM vehicles');
-  const count = Number(rows[0]?.n) || 0;
-  if (count === 0) {
+    // Insert new vehicles with Pinterest URLs
     for (const v of VEHICLES) {
-      await db.run(
-        'INSERT INTO vehicles (slug, name, price, category, img, specs, rating, tag) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      await client.query(
+        'INSERT INTO vehicles (slug, name, price, category, img, specs, rating, tag) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
         [v.slug, v.name, v.price, v.category, v.img, v.specs, v.rating, v.tag]
       );
     }
-    console.log(`[seed] ${VEHICLES.length} vehicules inseres`);
-  } else {
-    console.log(`[seed] ${count} vehicules deja en BDD, skip`);
+    console.log(`[reseed] ${VEHICLES.length} vehicles inserted`);
+
+    // Verify
+    const { rows } = await client.query('SELECT COUNT(*) as n FROM vehicles');
+    console.log(`[reseed] Total vehicles in DB: ${rows[0].n}`);
+  } finally {
+    client.release();
+    await pool.end();
   }
 }
+
+reseed().catch(e => { console.error(e); process.exit(1); });

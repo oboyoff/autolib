@@ -14,10 +14,11 @@
       return;
     }
     grid.innerHTML = vehicles.map(v => {
-      const isUnsplash = v.img && !v.img.startsWith('/');
-      const imgSrc = isUnsplash
-        ? `https://images.unsplash.com/${esc(v.img)}?w=1200&q=80`
-        : esc(v.img);
+      const imgSrc = v.img && v.img.startsWith('http')
+        ? esc(v.img)
+        : v.img && !v.img.startsWith('/')
+          ? `https://images.unsplash.com/${esc(v.img)}?w=1200&q=80`
+          : esc(v.img);
       const specs = (v.specs || '').split(',').map(s => s.trim()).filter(Boolean);
       const specsHtml = specs.length
         ? '<ul class="v-specs">' + specs.map(s => `<li>${esc(s)}</li>`).join('') + '</ul>'
